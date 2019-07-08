@@ -180,7 +180,7 @@ def handleSymbolizer(text):
             try:
                 widthTag = re.findall(" width= '[0-9]+'", attributes)[0]
                 widthNumber = re.findall("'[0-9.0-9]+'", widthTag)[0]
-                radius =  re.sub("'", "", widthNumber)
+                radius =  float(re.sub("'", "", widthNumber)) / 2 
             except:
                 #print("Error", symbol)
                 radius = 0
