@@ -2,8 +2,8 @@
 # Mathias Gröbe, TU Dresden 2019
 
 #style = 'amenity-low-priority'
-style = 'amenity%'
-#style = 'admin%'
+#style = 'amenity%'
+style = 'admin%'
 
 
 import time
@@ -273,7 +273,7 @@ start_time = time.time()
 content1 = """
 <html>
 <head>
-<title>Legend Matrix for """ + style + """</title>
+<title>Mulit-Scale Legend Matrix for """ + style + """</title>
 <style>
 body {
     font-family: monospace;
@@ -307,7 +307,7 @@ td:hover::after {
 </style>
 </head>
 <body>
-<h1>Legend Matrix</h1>
+<h1>Mulit-Scale Legend Matrix</h1>
 """
 
 content2 = """
