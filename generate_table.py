@@ -72,12 +72,6 @@ def handleSymbolizer(text):
     if "PolygonPatternSymbolizer" in text:
         polygonFlag = True
 
-    # Convert rgba()
-    #for rgba in re.findall("rgba\([0-9\s\.]+\)", text): 
-     #    #text = text.replace(rgba, rgba.replace(" ",", "))
-     #    #text = re.sub(rgba, re.sub(" ", ", ", rgba), text)
-
-
 
     for symbol in text.split("\n"):
         if "PolygonSymbolizer" in symbol:
@@ -163,8 +157,7 @@ def handleSymbolizer(text):
                 dummy_line = "<line " + attributes +  " x1='5' y1='30' x2='55' y2='30'/>"
 
             example_symbol =  example_symbol + dummy_line
-            #print(attributes)
-            #print(dummy_line)
+
         
         if "MarkersSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
@@ -175,14 +168,13 @@ def handleSymbolizer(text):
                 attributes = attributes.replace(key, key.replace("'", ""))
 
             # Try to get radius
-            radius = 0
+            radius = ''
 
             try:
                 widthTag = re.findall(" width= '[0-9]+'", attributes)[0]
                 widthNumber = re.findall("'[0-9.0-9]+'", widthTag)[0]
                 radius =  float(re.sub("'", "", widthNumber)) / 2 
             except:
-                #print("Error", symbol)
                 radius = 0
 
             # Try to find symbol
@@ -194,7 +186,6 @@ def handleSymbolizer(text):
             try:
                 fileTag = re.findall("file= '[a-zA-Z0-9\/_.]+'", attributes)[0]
                 filePath = re.findall("'[a-zA-Z0-9\/_.]+'", fileTag)[0]
-                #print(filePath)
 
                 # Get color
                 colorTag = re.findall("fill= '#[0-9a-z]+'", attributes)[0]
@@ -360,7 +351,7 @@ for i in range(1, y):
     
     filterRule = str(c2.fetchone()[0])
     f.write("<td>" + filterRule + "</td>")
-    for j in range(0, x-1):
+    for j in range(0, x - 1):
         c3 = conn.cursor()
         z = zoomlevelToScale(j)
         c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
