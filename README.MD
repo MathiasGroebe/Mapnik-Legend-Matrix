@@ -1,6 +1,8 @@
-# Creation of a Mulit-scale Legend Matrix
+# Creation of a Mulit-Scale Legend Matrix
 
-The most web map did not have any legend. This tool collection tries to generate something similiar to a legend from a Mapnik style-file. The result is a big matrix showing which features are how visualized depending on the scale/ zoom-level. 
+The most web map did not have any legend. This tool collection tries to generate something similiar to a legend from a Mapnik style-file. The result is a big matrix showing which features are how visualized depending on the scale/zoom-level. A manualy created example can you find [here](https://mathiasgroebe.github.io/Multi-Scale-Legend/Legend.html).
+
+![Sample for the Mulit-Scale-Legend Matrix](legend-sample.JPG)
 
 # Workflow
 
