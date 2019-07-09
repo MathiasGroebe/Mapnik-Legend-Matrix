@@ -3,7 +3,11 @@
 
 #style = 'amenity-low-priority'
 #style = 'amenity%'
-style = 'admin%'
+#style = 'admin%'
+
+style = 'landcover%'
+
+
 
 
 import time
@@ -341,7 +345,7 @@ f.write("<td>Style: " + style + "</td>")
 f.write("<td>z0</td> <td>z1</td> <td>z2</td> <td>z3</td> <td>z4</td> <td>z5</td> <td>z6</td> <td>z7</td> <td>z8</td> <td>z9</td> <td>z10</td> <td>z11</td> <td>z12</td> <td>z13</td> <td>z14</td> <td>z15</td> <td>z16</td> <td>z17</td> <td>z18</td> <td>z19</td>")
 f.write("</tr><tr>")
 f.write("<td>Filter</td>")
-f.write("<td>1:500,000,000</td> <td>1:250,000,000</td> <td>1:150,000,000</td> <td>1:70,000,000</td> <td>1:35,000,000</td> <td>1:15,000,000</td> <td>1:10,000,000</td> <td>1:4,000,000</td> <td>1:2,000,000</td> <td>1:1,000,000</td> <td>1:500,000</td> <td>1:250,000</td> <td>1:150,000</td> <td>1:70,000</td> <td>1:35,000</td> <td>1:15,000</td> <td>1:8,000</td> <td>1:4,000</td> <td>1:2,000</td> <td>1:1,000</td>")
+f.write("<td>1:500m</td> <td>1:250m</td> <td>1:150m</td> <td>1:70m</td> <td>1:35m</td> <td>1:15m</td> <td>1:10m</td> <td>1:4m</td> <td>1:2m</td> <td>1:1m</td> <td>1:500k</td> <td>1:250k</td> <td>1:150k</td> <td>1:70k</td> <td>1:35k</td> <td>1:15k</td> <td>1:8k</td> <td>1:4k</td> <td>1:2k</td> <td>1:1,000</td>")
 f.write("</tr>")
 f.write("</thead>")
 f.write("<tbody>")
