@@ -1,2 +1,2 @@
 ALTER TABLE mapnik_styles
-ADD COLUMN 'OwnStyleGroupe' TEXT;
+ADD COLUMN 'OwnStyleGroup' TEXT;

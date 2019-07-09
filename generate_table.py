@@ -4,10 +4,12 @@
 #style = 'amenity-low-priority'
 #style = 'amenity%'
 #style = 'admin%'
+#style = 'landcover%'
+style = 'buildings'
 
-style = 'landcover%'
-
-
+# Grouping by style name or group name
+#group_by = 'style'
+group_by = 'name'
 
 
 import time
@@ -269,7 +271,7 @@ conn = sqlite3.connect(db_path)
 
 f = open('Legend-Matrix-' + style + '.html', 'w')
 
-print("Create file.")
+print("Creating legend for", style)
 print("Creating content...")
 
 start_time = time.time()
@@ -328,13 +330,19 @@ data = (style,)
 
 # Number of rows
 c = conn.cursor()
-c.execute("SELECT count(*) as cnt FROM (SELECT RuleFilterEdit FROM mapnik_styles WHERE StyleName LIKE ? GROUP BY RuleFilterEdit ORDER BY RuleFilterEdit)", data)
+if group_by == 'name':
+    c.execute("SELECT count(*) as cnt FROM (SELECT RuleFilterEdit FROM mapnik_styles WHERE OwnStyleGroup LIKE ? GROUP BY RuleFilterEdit ORDER BY RuleFilterEdit)", data)
+else:
+    c.execute("SELECT count(*) as cnt FROM (SELECT RuleFilterEdit FROM mapnik_styles WHERE StyleName LIKE ? GROUP BY RuleFilterEdit ORDER BY RuleFilterEdit)", data)
 rownumber = c.fetchone()[0]
 
 
 # Content for number of rows
 c2 = conn.cursor()
-c2.execute("SELECT RuleFilterEdit FROM mapnik_styles  WHERE StyleName LIKE ? GROUP BY  RuleFilterEdit ORDER BY RuleFilterEdit", data)
+if group_by == 'name':
+    c2.execute("SELECT RuleFilterEdit FROM mapnik_styles  WHERE OwnStyleGroup LIKE ? GROUP BY  RuleFilterEdit ORDER BY RuleFilterEdit", data)
+else:
+    c2.execute("SELECT RuleFilterEdit FROM mapnik_styles  WHERE StyleName LIKE ? GROUP BY  RuleFilterEdit ORDER BY RuleFilterEdit", data)
 
 
 x = 21
@@ -358,7 +366,10 @@ for i in range(1, y):
     for j in range(0, x - 1):
         c3 = conn.cursor()
         z = zoomlevelToScale(j)
-        c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+        if group_by == 'name':
+            c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+        else:
+            c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         #print(style)
         #print(filterRule)
         fetch = c3.fetchall()
