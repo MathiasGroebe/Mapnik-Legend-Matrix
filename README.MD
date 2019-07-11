@@ -10,4 +10,4 @@ The script ``generate_table.py`` read the styling rules in the XML file and stor
 
 # Note
 
-The by practical reasons included style-file and the symbols are form the [OSM-Carto Style](https://github.com/gravitystorm/openstreetmap-carto). The XML-file was created form using [Carto](https://github.com/mapbox/carto). Every other Mapnik-stylsheet should also work.
+The by practical reasons included style-file and the symbols are form the [OSM-Carto Style](https://github.com/gravitystorm/openstreetmap-carto). The XML-file was created form using [Carto](https://github.com/mapbox/carto). Every other Mapnik-stylsheet should also work. You also have to install the Noto font, that is used by the map style.

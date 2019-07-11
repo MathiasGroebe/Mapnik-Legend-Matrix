@@ -3,8 +3,8 @@
 
 #style = 'amenity-low-priority'
 #style = 'amenity%'
-#style = 'admin%'
-style = 'landcover%'
+style = 'admin%'
+#style = 'landcover%'
 #style = 'buildings'
 
 # Grouping by style name or group name
@@ -245,11 +245,7 @@ def handleSymbolizer(text):
             attributes = re.sub("fontset-[0-9]", "Noto Sans", attributes)
             attributes = re.sub("fontset-name", "font-family", attributes)
             attributes = re.sub("size", "font-size", attributes)
-
-            for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
-                attributes = attributes.replace(key, key.replace("'",""))
-            for rgba in re.findall("rgba\([0-9\s\.]+\)", attributes): #Convert rgba()
-                attributes = attributes.replace(rgba, rgba.replace(" ",", "))                
+               
 
             dummy_text = "<text x = '10' y = '30' " + attributes + " >Text sample</text>"
             example_symbol = example_symbol + dummy_text
