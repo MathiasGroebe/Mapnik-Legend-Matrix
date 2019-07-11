@@ -67,11 +67,17 @@ def zoomlevelToScale(z): # converts the zoomlevel to scale number
     if z == 19:
         return 1000
 
-def converRGBA(text): # converts representation of RGBA(r,g,b,a) into svg notation for the given text
+def convertRGBA(text): # converts representation of RGBA(r,g,b,a) into svg notation for the given text
     for rgba in re.findall("rgba\([0-9\s\.]+\)", text): #Convert rgba()
         text = text.replace(rgba, rgba.replace(" ",", "))
-    
     return text
+
+def editKeyValue(text): # remove ' for keys
+    text = re.sub(",", "", text)
+    text = re.sub(":", "=", text)
+    for key in re.findall("'[a-zA-Z-]+'=", text): 
+        text = text.replace(key, key.replace("'",""))  
+    return text  
 	
 
 def handleSymbolizer(text):
@@ -88,24 +94,16 @@ def handleSymbolizer(text):
     for symbol in text.split("\n"):
         if "PolygonSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
-            attributes = re.sub(",", "", attributes)
-            attributes = re.sub(":", "=", attributes)
-
-            for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
-                attributes = attributes.replace(key, key.replace("'",""))
-
-            attributes = converRGBA(attributes)
+            attributes = editKeyValue(attributes)
+            attributes = convertRGBA(attributes)
 
             dummy_area = "<polygon points ='5,5 55,5 55,55 5,55' " + attributes +  " />"
             example_symbol = example_symbol + dummy_area
             
         if "PolygonPatternSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
-            attributes = re.sub(",", "", attributes)
-            attributes = re.sub(":", "=", attributes)
-
-            for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
-                attributes = attributes.replace(key, key.replace("'",""))
+            attributes = editKeyValue(attributes)
+            attributes = convertRGBA(attributes)
 
             fileTag = re.findall("file= '[a-zA-Z0-9\/_.]+'", attributes)[0]
             filePath = re.findall("'[a-zA-Z0-9\/_.]+'", fileTag)[0]
@@ -151,14 +149,8 @@ def handleSymbolizer(text):
 
         if "LineSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
-            attributes = re.sub(",", "", attributes)
-            attributes = re.sub(":", "=", attributes)
-
-            for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
-                attributes = attributes.replace(key, key.replace("'",""))
-
-            for rgba in re.findall("rgba\([0-9\s\.]+\)", attributes): #Convert rgba()
-                attributes = attributes.replace(rgba, rgba.replace(" ",", "))                
+            attributes = editKeyValue(attributes)
+            attributes = convertRGBA(attributes)                
 
             dummy_line = ""
 
@@ -172,11 +164,8 @@ def handleSymbolizer(text):
         
         if "MarkersSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
-            attributes = re.sub(",", "", attributes)
-            attributes = re.sub(":", "=", attributes)
-
-            for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
-                attributes = attributes.replace(key, key.replace("'", ""))
+            attributes = editKeyValue(attributes)
+            attributes = convertRGBA(attributes)
 
             # Try to get radius
             radius = ''
@@ -244,8 +233,8 @@ def handleSymbolizer(text):
 
         if "TextSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
-            attributes = re.sub(",", "", attributes)
-            attributes = re.sub(":", "=", attributes)
+            attributes = editKeyValue(attributes)
+            attributes = convertRGBA(attributes)
             
             if "fontset-1" in attributes:
                 attributes = attributes + "font-style = 'italic'"
