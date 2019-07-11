@@ -4,12 +4,12 @@
 #style = 'amenity-low-priority'
 #style = 'amenity%'
 #style = 'admin%'
-#style = 'landcover%'
-style = 'buildings'
+style = 'landcover%'
+#style = 'buildings'
 
 # Grouping by style name or group name
-#group_by = 'style'
-group_by = 'name'
+group_by = 'style'
+#group_by = 'name'
 
 
 import time
@@ -66,6 +66,12 @@ def zoomlevelToScale(z): # converts the zoomlevel to scale number
         return 2000
     if z == 19:
         return 1000
+
+def converRGBA(text): # converts representation of RGBA(r,g,b,a) into svg notation for the given text
+    for rgba in re.findall("rgba\([0-9\s\.]+\)", text): #Convert rgba()
+        text = text.replace(rgba, rgba.replace(" ",", "))
+    
+    return text
 	
 
 def handleSymbolizer(text):
@@ -88,8 +94,7 @@ def handleSymbolizer(text):
             for key in re.findall("'[a-zA-Z-]+'=", attributes): #remove ' for keys
                 attributes = attributes.replace(key, key.replace("'",""))
 
-            for rgba in re.findall("rgba\([0-9\s\.]+\)", attributes): #Convert rgba()
-                attributes = attributes.replace(rgba, rgba.replace(" ",", "))
+            attributes = converRGBA(attributes)
 
             dummy_area = "<polygon points ='5,5 55,5 55,55 5,55' " + attributes +  " />"
             example_symbol = example_symbol + dummy_area
