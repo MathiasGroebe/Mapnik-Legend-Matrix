@@ -6,11 +6,7 @@ import xml.etree.ElementTree as ET
 import re
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
+
     try:
         conn = sqlite3.connect(db_file)
         return conn
@@ -20,12 +16,7 @@ def create_connection(db_file):
     return None
 
 def select_all_rows(conn):
-    """
-    Query tasks by priority
-    :param conn: the Connection object
-    :param priority:
-    :return:
-    """
+
     cur = conn.cursor()
     cur.execute("SELECT * FROM mapnik_styles")
  
@@ -35,15 +26,9 @@ def select_all_rows(conn):
         print(row)
 
 def insert_values(conn, values):
-    """
-    Create a new task
-    :param conn:
-    :param task:
-    :return:
-    """
  
-    sql = ''' INSERT INTO mapnik_styles(LayerName, LayerMinScale, LayerMaxScale, StyleName, StyleFilter, RuleMinScale, RuleMaxScale, RuleFilter, RuleFilterEdit, RuleMarker)
-              VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
+    sql = ''' INSERT INTO mapnik_styles(LayerName, LayerMinScale, LayerMaxScale, StyleName, StyleImageFilter, StyleCompOp, StyleOpacity, RuleMinScale, RuleMaxScale, RuleFilter, RuleFilterEdit, RuleMarker)
+              VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
     cur = conn.cursor()
     cur.execute(sql, values)
     return cur.lastrowid        
@@ -67,7 +52,9 @@ def main():
                 styleNameValues = (styleName.text.strip(),) 
                 for style in mapnikXML.getroot().findall("Style"):
                     if style.get("name") == styleName.text.strip():
-                        styleValues = (style.get("image-filters"),)
+                        styleValues = (style.get("image-filters"),
+                            style.get("comp-op"),
+                            style.get("opacity"))
 
                         for rule in style.findall("Rule"):
 
@@ -82,7 +69,7 @@ def main():
                                 if child.tag == "MaxScaleDenominator":
                                     scaleValue2 = (child.text,)
                                 if child.tag == "Filter":
-                                    filterValue = child.text.strip()
+                                    filterValue = child.text.strip()                                                                      
                                 if child.tag == "PolygonSymbolizer":
                                     symbolizerValues = str(child.tag) + str(child.attrib) + "\n"
                                 if child.tag == "LineSymbolizer":
@@ -109,18 +96,10 @@ def main():
                             # Replace way_pixel and way_area
                             filterValueEdit = re.sub("and\s\(\[way_pixels]\s[<>=]+\s[0-9]+\)", "", filterValue)
                             filterValueEdit = re.sub("and\s\(\[way_area]\s[<>=]+\s[0-9]+\)", "", filterValueEdit)
-                            ruleValues = scaleValue1 + scaleValue2 + (filterValue,) + (filterValueEdit,) + (symbolizerValues,)
-
+                            ruleValues = scaleValue1 + scaleValue2 + (filterValue, ) + (filterValueEdit,) + (symbolizerValues,)
                             
                             new_style = layerValues + styleNameValues + styleValues + ruleValues
-                            #print(new_style, "\n")
-                            #print(filterValue)
-                            #print(re.sub("and\s\(\[way_pixels]\s[<>=]+\s[0-9]+\)", "", filterValue))
-                
                             insert_values(conn, new_style)
-
-                
-            #select_all_rows(conn)
  
  
 if __name__ == '__main__':

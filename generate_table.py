@@ -360,9 +360,9 @@ for i in range(1, y):
         z = zoomlevelToScale(j)
         # Query rules for symbols
         if group_by == 'name':
-            c3.execute("SELECT RuleMarker, RuleFilter, StyleFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         else:
-            c3.execute("SELECT RuleMarker, RuleFilter, StyleFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         fetch = c3.fetchone()
         if fetch:    
             f.write("<td title='" + re.sub("'", "&apos;", fetch[0]) + "'>" + handleSymbolizer(fetch[0], z) + "</td>")    
