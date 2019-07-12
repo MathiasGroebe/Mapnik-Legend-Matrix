@@ -2,8 +2,8 @@
 # Mathias Gröbe, TU Dresden 2019
 
 #style = 'amenity-low-priority'
-style = 'amenity%'
-#style = 'admin%'
+#style = 'amenity%'
+style = 'admin%'
 #style = 'landcover%'
 #style = 'buildings'
 
