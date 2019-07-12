@@ -80,7 +80,7 @@ def editKeyValue(text): # remove ' for keys
     return text  
 	
 
-def handleSymbolizer(text):
+def handleSymbolizer(text, z):
     example_symbol = ""
     polygonFlag = False
 
@@ -338,6 +338,7 @@ else:
 x = 21
 y = int(rownumber)
 
+# Write table head
 f.write("<tr>")
 f.write("<td>Style: " + style + "</td>")
 f.write("<td>z0</td> <td>z1</td> <td>z2</td> <td>z3</td> <td>z4</td> <td>z5</td> <td>z6</td> <td>z7</td> <td>z8</td> <td>z9</td> <td>z10</td> <td>z11</td> <td>z12</td> <td>z13</td> <td>z14</td> <td>z15</td> <td>z16</td> <td>z17</td> <td>z18</td> <td>z19</td>")
@@ -348,25 +349,23 @@ f.write("</tr>")
 f.write("</thead>")
 f.write("<tbody>")
 
+# Write table content
 for i in range(1, y):
     f.write("<tr>")
-    
+    # Write filter for row
     filterRule = str(c2.fetchone()[0])
     f.write("<td>" + filterRule + "</td>")
     for j in range(0, x - 1):
         c3 = conn.cursor()
         z = zoomlevelToScale(j)
+        # Query rules for symbols
         if group_by == 'name':
-            c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         else:
-            c3.execute("SELECT RuleMarker, RuleFilter FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
-        #print(style)
-        #print(filterRule)
-        fetch = c3.fetchall()
-        if fetch: # check if empty
-            #handleSymbolizer(fetch[0][0])
-            #f.write("<td>" + str(fetch[0][0]) + "</td>")    
-            f.write("<td title='" + re.sub("'", "&apos;", fetch[0][0]) + "'>" + handleSymbolizer(fetch[0][0])+ "</td>")    
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+        fetch = c3.fetchone()
+        if fetch:    
+            f.write("<td title='" + re.sub("'", "&apos;", fetch[0]) + "'>" + handleSymbolizer(fetch[0], z) + "</td>")    
         else:
             f.write("<td>" + "</td>")    
             
