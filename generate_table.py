@@ -3,8 +3,8 @@
 
 #style = 'amenity-low-priority'
 #style = 'amenity%'
-style = 'admin%'
-#style = 'landcover%'
+#style = 'admin%'
+style = 'landcover%'
 #style = 'buildings'
 
 # Grouping by style name or group name
@@ -78,9 +78,13 @@ def editKeyValue(text): # remove ' for keys
     for key in re.findall("'[a-zA-Z-]+'=", text): 
         text = text.replace(key, key.replace("'",""))  
     return text  
-	
 
-def handleSymbolizer(text, z):
+def setOpacity(attributes, opacity): # add opacity value
+    if opacity:
+        attributes = attributes + " opacity = '" + opacity + "'" 
+    return attributes
+
+def handleSymbolizer(text, z, imageFilter, opacity):
     example_symbol = ""
     polygonFlag = False
 
@@ -90,12 +94,12 @@ def handleSymbolizer(text, z):
     if "PolygonPatternSymbolizer" in text:
         polygonFlag = True
 
-
     for symbol in text.split("\n"):
         if "PolygonSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
             attributes = editKeyValue(attributes)
             attributes = convertRGBA(attributes)
+            attributes = setOpacity(attributes, opacity)            
 
             dummy_area = "<polygon points ='5,5 55,5 55,55 5,55' " + attributes +  " />"
             example_symbol = example_symbol + dummy_area
@@ -104,6 +108,7 @@ def handleSymbolizer(text, z):
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
             attributes = editKeyValue(attributes)
             attributes = convertRGBA(attributes)
+            attributes = setOpacity(attributes, opacity)            
 
             fileTag = re.findall("file= '[a-zA-Z0-9\/_.]+'", attributes)[0]
             filePath = re.findall("'[a-zA-Z0-9\/_.]+'", fileTag)[0]
@@ -150,7 +155,8 @@ def handleSymbolizer(text, z):
         if "LineSymbolizer" in symbol:
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
             attributes = editKeyValue(attributes)
-            attributes = convertRGBA(attributes)                
+            attributes = convertRGBA(attributes) 
+            attributes = setOpacity(attributes, opacity)
 
             dummy_line = ""
 
@@ -166,6 +172,7 @@ def handleSymbolizer(text, z):
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
             attributes = editKeyValue(attributes)
             attributes = convertRGBA(attributes)
+            attributes = setOpacity(attributes, opacity)            
 
             # Try to get radius
             radius = ''
@@ -235,6 +242,7 @@ def handleSymbolizer(text, z):
             attributes = re.findall("{(.*)}", symbol)[0] #match attributes
             attributes = editKeyValue(attributes)
             attributes = convertRGBA(attributes)
+            attributes = setOpacity(attributes, opacity)            
             
             if "fontset-1" in attributes:
                 attributes = attributes + "font-style = 'italic'"
@@ -360,12 +368,12 @@ for i in range(1, y):
         z = zoomlevelToScale(j)
         # Query rules for symbols
         if group_by == 'name':
-            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, StyleOpacity, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE OwnStyleGroup LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         else:
-            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
+            c3.execute("SELECT RuleMarker, RuleFilter, StyleImageFilter, StyleOpacity, LayerMinScale, LayerMaxScale FROM mapnik_styles WHERE StyleName LIKE ? AND RuleFilterEdit = ? AND RuleMaxScale >= ? AND RuleMinScale <= ? AND LayerMaxScale >= ? AND LayerMinScale <= ?", (style, filterRule, z, z, z, z))
         fetch = c3.fetchone()
         if fetch:    
-            f.write("<td title='" + re.sub("'", "&apos;", fetch[0]) + "'>" + handleSymbolizer(fetch[0], z) + "</td>")    
+            f.write("<td title='" + re.sub("'", "&apos;", fetch[0]) + "'>" + handleSymbolizer(fetch[0], z, fetch[2], fetch[3]) + "</td>")    
         else:
             f.write("<td>" + "</td>")    
             
