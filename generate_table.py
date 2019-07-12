@@ -2,9 +2,9 @@
 # Mathias Gröbe, TU Dresden 2019
 
 #style = 'amenity-low-priority'
-#style = 'amenity%'
+style = 'amenity%'
 #style = 'admin%'
-style = 'landcover%'
+#style = 'landcover%'
 #style = 'buildings'
 
 # Grouping by style name or group name
