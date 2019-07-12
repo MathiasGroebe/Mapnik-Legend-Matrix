@@ -205,7 +205,7 @@ def handleSymbolizer(text, z, imageFilter, opacity):
 
                         j = 1
 
-                        for i in re.findall("[0-9]+", svg.getroot().get("viewBox")):
+                        for i in re.findall("[0-9.0-9]+", svg.getroot().get("viewBox")):
                             if j == 3:
                                 height = i
                             if j == 4:
