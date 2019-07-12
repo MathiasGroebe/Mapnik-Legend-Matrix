@@ -175,14 +175,17 @@ def handleSymbolizer(text, z, imageFilter, opacity):
             attributes = setOpacity(attributes, opacity)            
 
             # Try to get radius
-            radius = ''
+            radius = 0
 
             try:
                 widthTag = re.findall(" width= '[0-9]+'", attributes)[0]
                 widthNumber = re.findall("'[0-9.0-9]+'", widthTag)[0]
                 radius =  float(re.sub("'", "", widthNumber)) / 2 
             except:
-                radius = 0
+                if "file" in attributes:
+                    radius = 0
+                else:
+                    radius = 5
 
             # Try to find symbol
             dummy_symbol = ""
