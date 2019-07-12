@@ -194,13 +194,16 @@ def handleSymbolizer(text, z, imageFilter, opacity):
             color = ""
 
             try:
-                fileTag = re.findall("file= '[a-zA-Z0-9\/_.]+'", attributes)[0]
-                filePath = re.findall("'[a-zA-Z0-9\/_.]+'", fileTag)[0]
+                fileTag = re.findall("file= '[a-zA-Z0-9\/_.-]+'", attributes)[0]
+                filePath = re.findall("'[a-zA-Z0-9\/_.-]+'", fileTag)[0]
 
                 # Get color
-                colorTag = re.findall("fill= '#[0-9a-z]+'", attributes)[0]
-                colorNumber = re.findall("'#[0-9a-z]+'", colorTag)[0]
-                color =  re.sub("'", "", colorNumber) 
+                try:
+                    colorTag = re.findall("fill= '#[0-9a-z]+'", attributes)[0]
+                    colorNumber = re.findall("'#[0-9a-z]+'", colorTag)[0]
+                    color =  re.sub("'", "", colorNumber) 
+                except:
+                    color = ""
 
                 if "svg" in filePath:
                     try:
